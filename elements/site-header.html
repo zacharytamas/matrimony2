@@ -1,0 +1,139 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tab.html">
+<!-- <link rel="import" href="../bower_components/paper-button/paper-button.html"> -->
+
+<dom-module id="site-header">
+  <template>
+    <style is="custom-style" include="shared-styles"></style>
+    <style>
+      :host {
+        display: block;
+        text-align: center;
+
+        --name-size: 32px;
+        --amp-size: 36px;
+        --vertical-padding: 16px;
+
+        --name-size-tall: 40px;
+        --amp-size-tall: 48px;
+        --vertical-padding-tall: 32px;
+      }
+
+      :host(.tall) .names {
+        font-size: var(--name-size-tall);
+        margin: var(--vertical-padding-tall) 0;
+        line-height: var(--amp-size-tall);
+      }
+
+      :host(.tall) .amp {
+        font-size: var(--amp-size-tall);
+      }
+
+      :host(.tall) nav {
+        margin-bottom: 8px;
+      }
+
+      .masthead {
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
+        max-width: var(--size-master);
+        margin: 0 auto;
+      }
+
+      .masthead > .bumper {
+        @apply(--layout-flex);
+      }
+
+      .masthead > .bumper:last-child {
+        text-align: right;
+      }
+
+      .names {
+        color: rgba(0, 0, 0, .87);
+        transition: all 0.25s;
+        cursor: pointer;
+
+        font-family: var(--font-text, Arvo);
+        font-size: var(--name-size);
+        margin: var(--vertical-padding) 0;
+        line-height: var(--amp-size);
+        text-transform: uppercase;
+        vertical-align: middle;
+      }
+
+      .amp {
+        transition: all 0.25s;
+        font-family: Lobster;
+        font-size: var(--amp-size);
+        color: var(--color-coral);
+      }
+
+      nav {
+        /*background: var(--color-burlap);*/
+        transition: all 0.5s;
+      }
+
+      paper-tabs {
+        border-color: var(--color-coral);
+        border-style: double;
+        border-width: 3px 0;
+
+        font-family: 'Arvo';
+        max-width: var(--size-master);
+        margin: 0 auto;
+
+        --paper-tabs-selection-bar-color: var(--color-coral);
+      }
+
+      paper-tab {
+        --paper-tab-ink: var(--color-mint);
+      }
+
+      paper-tab[link] a {
+        @apply(--layout-horizontal);
+        @apply(--layout-center-center);
+        text-decoration: none;
+        color: rgba(0, 0, 0, 0.87);
+      }
+
+      paper-button {
+        background: var(--color-mint);
+      }
+    </style>
+
+    <div class="masthead">
+      <div class="bumper"></div>
+      <div class="names" on-tap="_gotoSplash">
+        <span class="name">Zachary</span> <span class="amp">&amp;</span> <span class="name">Chelsea</span>
+      </div>
+      <div class="bumper"></div>
+    </div>
+
+    <nav>
+      <paper-tabs no-bar>
+        <!-- <paper-tab link><a href="/the-wedding/">The Wedding</a></paper-tab> -->
+        <!-- <paper-tab link><a href="/getting-there/">Getting There</a></paper-tab> -->
+        <paper-tab link><a href="/staying-there/">Staying There</a></paper-tab>
+        <paper-tab link><a href="/gift-registries/">Registries</a></paper-tab>
+        <paper-tab link><a href="/rsvp/">RSVP</a></paper-tab>
+      </paper-tabs>
+    </nav>
+
+  </template>
+  <script>
+    Polymer({
+      is: 'site-header',
+      properties: {
+        selectedPage: {
+          type: String,
+        }
+      },
+
+      _gotoSplash: function() {
+        window.location = '/';
+      }
+    });
+  </script>
+</dom-module>

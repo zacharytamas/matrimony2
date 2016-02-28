@@ -1,0 +1,55 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+
+<link rel="import" href="site-footer.html">
+<link rel="import" href="site-header.html">
+
+<dom-module id="matrimony-site">
+  <template>
+    <style>
+
+      :host {
+        display: block;
+
+        --size-master: 960px;
+        --font-text: Arvo;
+
+        background: var(--color-ivory);
+        font-family: var(--font-text);
+      }
+
+      #content, site-footer {
+        max-width: var(--size-master);
+        margin: 18px auto;
+      }
+    </style>
+
+    <site-header
+      selected-page="{{selectedPage}}"></site-header>
+
+    <div id="content">
+      <content select=".content"></content>
+    </div>
+
+    <site-footer></site-footer>
+
+  </template>
+  <script>
+
+    var M = window.M = {
+      weddingAddress: '2 Springfield Lane, Williamsport, MD 21795',
+      mapsKey: 'AIzaSyBaOLunG39Qqixju2ugr9W3iaVG1lAQJ1o'
+    };
+
+    Polymer({
+      is: 'matrimony-site',
+
+      properties: {
+        pageElement: {
+          type: String,
+          observer: '_pageElementChanged'
+        }
+      }
+    });
+  </script>
+</dom-module>
