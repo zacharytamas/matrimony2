@@ -12,9 +12,10 @@
       footer {
         @apply(--layout-horizontal);
         @apply(--layout-wrap);
-        border-width: 3px 0;
+        border-top: 1px var(--color-coral) solid;
+        /*border-width: 3px 0;
         border-style: double;
-        border-color: var(--color-coral);
+        border-color: var(--color-coral);*/
       }
 
       footer > div {
@@ -23,12 +24,38 @@
         min-width: 270px;
         text-align: center;
       }
+
+      .love {
+        color: #e74c3c;
+        display: inline-block;
+        font-size: 1.4em;
+        position: relative;
+        top: .2em;
+        -webkit-transform: scale(.9);
+        -moz-transform: scale(.9);
+        transform: scale(.9);
+        -webkit-animation: love .5s infinite linear alternate-reverse;
+        -moz-animation: love .5s infinite linear alternate-reverse;
+        animation: love .5s infinite linear alternate-reverse;
+      }
+
+      @-webkit-keyframes love {
+          to { -webkit-transform: scale(1.2); }
+      }
+
+      @-moz-keyframes love {
+          to { -moz-transform: scale(1.2); }
+      }
+
+      @keyframes love {
+          to { transform: scale(1.2); }
+      }
     </style>
 
     <footer>
-      <div>June 4th, 2016 at 4pm</div>
-      <div>Williamsport, MD</div>
-      <div>Zachary Jones <span class="amp">&amp;</span> Chelsea Eells</div>
+      <!-- <div>June 4th, 2016 at 3pm</div>
+      <div>Williamsport, MD</div> -->
+      <div>Zachary Jones <span class="love">♥</span> Chelsea Eells</div>
     </footer>
 
   </template>
