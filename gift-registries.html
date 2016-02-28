@@ -5,3 +5,7 @@ permalink: /gift-registries/
 ---
 
 <h1>Gift Registries</h1>
+
+{% for registry in site.data.registries %}
+  <h4>{{registry.name}}</h4>
+{% endfor %}

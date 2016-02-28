@@ -1,0 +1,11 @@
+- name: Target
+  url: http://www.target.com/gift-registry/giftgiver?registryId=WLZ0nI6u72oSjZuTKTJs-Q&registryType=WEDDING
+  image: target.png
+
+- name: Bed Bath and Beyond
+  url: http://www.bedbathandbeyond.com/store/giftregistry/view_registry_guest.jsp?pwsToken=&eventType=Wedding&registryId=543133907&pwsurl=
+  image: bed-bath-beyond.png
+
+- name: Crate and Barrel
+  url: http://www.crateandbarrel.com/gift-registry/chelsea-eells-and-zachary-jones/r5489682
+  image: crate-and-barrel-logo.png
