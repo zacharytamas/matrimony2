@@ -10,10 +10,10 @@ permalink: /gift-registries/
   we'd love to receive by clicking the logos below!</p>
 
 <gift-registries>
-  {% for registry in site.data.registries %}
-    <gift-registry
-      name="{{registry.name}}"
-      url="{{registry.url}}"
-      image="{{registry.image}}"></gift-registry>
-  {% endfor %}
+{% for registry in site.data.registries %}
+  <gift-registry
+    name="{{registry.name}}"
+    url="{{registry.url}}"
+    image="{{registry.image}}"></gift-registry>
+{% endfor %}
 </gift-registries>
