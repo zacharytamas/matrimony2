@@ -1,0 +1,161 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/google-map/google-map-directions.html">
+<link rel="import" href="../../bower_components/google-map/google-map.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
+
+<link rel="import" href="hotels.html">
+
+<dom-module id="staying-there">
+  <template>
+    <style is="custom-style" include="shared-styles"></style>
+    <style>
+      :host {
+        display: block;
+      }
+
+      .container {
+        @apply(--layout-horizontal);
+        @apply(--layout-start);
+      }
+
+      .container .hotel-list {
+        --paper-card-background-color: var(--color-coral);
+        --paper-card-header-color: white;
+        width: 240px;
+      }
+
+      .hotel-list paper-menu {
+        background-color: white;
+      }
+
+      .hotel-list paper-menu paper-item {
+        cursor: pointer;
+      }
+
+      .hotel-detail {
+        @apply(--layout-vertical);
+        @apply(--layout-flex);
+        padding: 0 1rem;
+      }
+
+      .hotel-detail > paper-card {
+        /*background: var(--color-gold);*/
+
+      }
+
+      .hotel-detail > div {
+        @apply(--layout-flex);
+      }
+
+      .details {
+        padding: 16px;
+      }
+
+      #mapEl {
+        height: 300px;
+      }
+    </style>
+
+    <google-map-directions id="directionsEl"
+      api-key="AIzaSyBaOLunG39Qqixju2ugr9W3iaVG1lAQJ1o"
+      language="en" response="{{directionsResponse}}"
+      start-address="[[selectedHotel.address]]">
+    </google-map-directions>
+
+    <div class="container">
+
+      <paper-card heading="Nearby Hotels" class="hotel-list">
+        <paper-menu selected="{{selectedIndex}}">
+          <template is="dom-repeat" items="{{hotels}}">
+            <paper-item>[[item.name]]</paper-item>
+          </template>
+        </paper-menu>
+      </paper-card>
+
+      <div class="hotel-detail">
+
+        <paper-card elevation="2">
+          <div class="card-content">
+            <google-map id="mapEl"
+              api-key="AIzaSyBaOLunG39Qqixju2ugr9W3iaVG1lAQJ1o"
+              on-api-load="_mapsApiLoaded"
+              libraries="places" fit-to-markers disable-default-ui
+              language="en">
+            </google-map>
+
+            <div class="details">
+              <h1>[[selectedHotel.name]]</h1>
+              <address>
+                <div>[[selectedHotel.address]]</div>
+              </address>
+
+              <p>This hotel is a <span>[[_renderDriveDistance(directionsResponse)]]</span> drive from the wedding venue, which is usually driveable in about <span>[[_renderDriveTime(directionsResponse)]]</span>.</p>
+            </div>
+          </div>
+        </paper-card>
+
+
+      </div>
+    </div>
+
+  </template>
+  <script>
+  (function() {
+    var METERS_TO_MILES = 0.00062150403977626;
+    var SECONDS_TO_MINUTES = 60;
+
+    Polymer({
+      is: 'staying-there',
+      properties: {
+        hotels: {
+          type: Array,
+          value: function() {
+            return window.HOTELS || [];
+          }
+        },
+
+        selectedIndex: {
+          type: Number,
+          observer: '_selectedIndexChanged',
+          value: 0
+        },
+
+        selectedHotel: {
+          type: Object
+        }
+
+      },
+
+      ready: function() {
+        this.$.directionsEl.endAddress = M.weddingAddress;
+      },
+
+      _selectedIndexChanged: function(newValue, oldValue) {
+        this.selectedHotel = this.hotels[newValue];
+      },
+
+      _mapsApiLoaded: function() {
+        this.$.directionsEl.map = this.$.mapEl.map;
+      },
+
+      _renderDriveDistance: function(response) {
+        var route = response.routes[0];
+        var leg = route.legs[0];
+
+        var miles = leg.distance.value * METERS_TO_MILES;
+        return miles.toFixed(2) + ' mile';
+      },
+
+      _renderDriveTime: function(response) {
+        var route = response.routes[0];
+        var leg = route.legs[0];
+
+        var minutes = leg.duration.value / SECONDS_TO_MINUTES;
+        return minutes.toFixed(0) + ' minutes';
+      }
+    });
+  })();
+  </script>
+</dom-module>
