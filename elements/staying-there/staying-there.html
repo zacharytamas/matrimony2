@@ -1,9 +1,12 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/google-map/google-map-directions.html">
+<link rel="import" href="../../bower_components/google-map/google-map-search.html">
 <link rel="import" href="../../bower_components/google-map/google-map.html">
 <link rel="import" href="../../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
+
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
 
 <link rel="import" href="hotels.html">
 
@@ -49,8 +52,20 @@
         @apply(--layout-flex);
       }
 
-      .details {
+      .hotel-details {
         padding: 16px;
+
+      }
+
+      .hotel-details .photos {
+        @apply(--layout-horizontal);
+        @apply(--layout-wrap);
+        max-width: 100%;
+      }
+
+      .hotel-details .photos iron-image {
+        width: 50%;
+        height: 200px;
       }
 
       #mapEl {
@@ -61,8 +76,14 @@
     <google-map-directions id="directionsEl"
       api-key="AIzaSyBaOLunG39Qqixju2ugr9W3iaVG1lAQJ1o"
       language="en" response="{{directionsResponse}}"
-      start-address="[[selectedHotel.address]]">
+      start-address="[[selectedHotel.formatted_address]]">
     </google-map-directions>
+
+    <google-map-search id="mapsSearch"
+      map="[[map]]"
+      latitude="39.596945"
+      longitude="-77.8178067"
+      radius="5"></google-map-search>
 
     <div class="container">
 
@@ -79,20 +100,37 @@
         <paper-card elevation="2">
           <div class="card-content">
             <google-map id="mapEl"
+              map="{{map}}"
               api-key="AIzaSyBaOLunG39Qqixju2ugr9W3iaVG1lAQJ1o"
               on-api-load="_mapsApiLoaded"
               libraries="places" fit-to-markers disable-default-ui
               language="en">
             </google-map>
 
-            <div class="details">
-              <h1>[[selectedHotel.name]]</h1>
-              <address>
-                <div>[[selectedHotel.address]]</div>
-              </address>
+            <template is="dom-if" if="[[place]]">
+              <div class="hotel-details">
 
-              <p>This hotel is a <span>[[_renderDriveDistance(directionsResponse)]]</span> drive from the wedding venue, which is usually driveable in about <span>[[_renderDriveTime(directionsResponse)]]</span>.</p>
-            </div>
+                <h1>[[place.name]]</h1>
+
+                <h3>[[place.formatted_phone_number]]</h3>
+
+                <address>
+                  <div>[[place.formatted_address]]</div>
+                </address>
+
+                <p><b>This hotel is rated [[place.rating]] out of 5 stars</b> and is a <span>[[_renderDriveDistance(directionsResponse)]]</span> drive from the wedding venue, which is usually driveable in about <span>[[_renderDriveTime(directionsResponse)]]</span>.</p>
+
+                <div class="photos">
+                  <template is="dom-if" if="[[place.photos]]">
+                    <template is="dom-repeat" items="[[place.photos]]">
+                      <iron-image fade sizing="contain" src="[[_getPhoto(item)]]"></iron-image>
+                    </template>
+                  </template>
+                </div>
+              </div>
+            </template>
+
+
           </div>
         </paper-card>
 
@@ -118,13 +156,14 @@
 
         selectedIndex: {
           type: Number,
-          observer: '_selectedIndexChanged',
-          value: 0
+          observer: '_selectedIndexChanged'
         },
 
         selectedHotel: {
           type: Object
-        }
+        },
+
+        place: Object
 
       },
 
@@ -132,12 +171,24 @@
         this.$.directionsEl.endAddress = M.weddingAddress;
       },
 
+      _getPhoto: function(place) {
+        return place.getUrl({maxWidth: 300, maxHeight: 200});
+      },
+
       _selectedIndexChanged: function(newValue, oldValue) {
         this.selectedHotel = this.hotels[newValue];
+
+        if (this.mapsLoaded) {
+          this.$.mapsSearch.getDetails(this.selectedHotel.place_id)
+          .then(function(place) {
+            this.place = place;
+          }.bind(this));
+        }
       },
 
       _mapsApiLoaded: function() {
         this.$.directionsEl.map = this.$.mapEl.map;
+        this.mapsLoaded = true;
       },
 
       _renderDriveDistance: function(response) {

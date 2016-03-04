@@ -1,0 +1,51 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+
+<dom-module id="hotel-detail">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      .container {
+        @apply(--layout-horizontal);
+      }
+
+      .container > div {
+        @apply(--layout-flex);
+      }
+
+      .container .images {
+        max-width: 200px;
+      }
+    </style>
+
+    <div class="container">
+      <div class="detail">
+        <template is="dom-if" if="[[place]]">
+          <h1></h1>
+        </template>
+      </div>
+      <div class="images"></div>
+    </div>
+
+  </template>
+  <script>
+    Polymer({
+      is: 'hotel-detail',
+      properties: {
+        place: {
+          type: Object,
+          observer: '_placeChanged'
+        },
+        loading: Boolean
+      },
+
+      _placeChanged: function(newValue, oldValue) {
+        console.log('place changed');
+      }
+    });
+  </script>
+</dom-module>
