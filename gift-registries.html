@@ -6,6 +6,14 @@ permalink: /gift-registries/
 
 <h1>Gift Registries</h1>
 
-{% for registry in site.data.registries %}
-  <h4>{{registry.name}}</h4>
-{% endfor %}
+<p>If you'd like to bring along a gift, you can take a peek at some things
+  we'd love to receive by clicking the logos below!</p>
+
+<gift-registries>
+  {% for registry in site.data.registries %}
+    <gift-registry
+      name="{{registry.name}}"
+      url="{{registry.url}}"
+      image="{{registry.image}}"></gift-registry>
+  {% endfor %}
+</gift-registries>

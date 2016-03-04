@@ -1,0 +1,58 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+
+<dom-module id="gift-registry">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      .registry {
+        /*@apply(--layout-flex);*/
+        text-align: center;
+        max-width: 250px;
+        min-width: 150px;
+        margin: 25px 25px;
+        padding: 25px;
+      }
+
+      .registry iron-image {
+        width: 200px;
+        height: 150px;
+      }
+    </style>
+
+    <paper-card class="registry" id="card" animated-shadow>
+      <a href="[[url]]" target="_blank">
+        <iron-image  sizing="contain" src="/elements/gift-registries/[[image]]" alt="[[name]] logo"></iron-image>
+      </a>
+    </paper-card>
+
+  </template>
+  <script>
+    Polymer({
+      is: 'gift-registry',
+
+      listeners: {
+        'mouseover': '_hover',
+        'mouseout': '_unhover'
+      },
+
+      properties: {
+        image: String,
+        name: String,
+        url: String
+      },
+
+      _hover: function() {
+        this.$.card.elevation = 5;
+      },
+
+      _unhover: function() {
+        this.$.card.elevation = 1;
+      }
+    });
+  </script>
+</dom-module>
