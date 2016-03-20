@@ -80,7 +80,11 @@ class SpreadsheetService(object):
     # is the spreadsheet row number. This lets us find it in constant time.
     row_number = map(lambda e: int(e), re.findall('\d+', code))
     if len(row_number):
-      return row_number[0]
+      number = row_number[0]
+      # Now that we have a row number, let's make sure that it actually
+      # matches. If it doesn't, we implicitly return None.
+      if self.__getValueFromRow(number, 'rsvpCode') == code:
+        return number
 
   def __writeValue(self, row_number, col_name, value):
     """Convenience method for writing a value to the spreadsheet."""
@@ -104,16 +108,28 @@ class SpreadsheetService(object):
     row_number = self.__findRowForCode(code)
 
     if not row_number:
-      raise ValueError("RSVP not found")
+      return {
+        'status': 'invalid',
+        'fields': ['rsvpCode']
+      }
 
     rsvp_range = "%s%d:%s%d" % (COL_LETTERS["rsvpResponseMethod"], row_number,
                                 COL_LETTERS["rsvpMealPreference"], row_number)
 
     # This quirky method allows us to update them in a batch.
     selection = self.worksheet.range(rsvp_range)
-    values = ["Online", "YES" if attending else "NO", headcount, meal_preference]
+    values = [
+      "Online",
+      "YES" if attending else "NO",
+      headcount,
+      meal_preference
+    ]
 
     for cell, value in zip(selection, values):
       cell.value = value
 
     self.worksheet.update_cells(selection)
+
+    return {
+      'status': 'success'
+    }
