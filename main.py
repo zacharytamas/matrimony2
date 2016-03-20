@@ -30,12 +30,12 @@ class RSVPHandler(webapp2.RequestHandler):
       # TODO Return an InvalidRequest
       return
 
-    service.RSVP(code,
-                 attending == "true",
-                 headcount,
-                 meal_preference)
+    response = service.RSVP(code,
+                            attending == "true",
+                            headcount,
+                            meal_preference)
 
-    # TODO Return properly
+    self.response.write(json.dumps(response, indent=4))
 
 app = webapp2.WSGIApplication([
   webapp2.Route('/rsvp/api/guest-lookup/', RSVPHandler, handler_method='guestLookup'),
