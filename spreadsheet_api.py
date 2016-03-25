@@ -80,11 +80,16 @@ class SpreadsheetService(object):
     # is the spreadsheet row number. This lets us find it in constant time.
     row_number = map(lambda e: int(e), re.findall('\d+', code))
     if len(row_number):
-      number = row_number[0]
-      # Now that we have a row number, let's make sure that it actually
-      # matches. If it doesn't, we implicitly return None.
-      if self.__getValueFromRow(number, 'rsvpCode') == code:
-        return number
+      return row_number[0]
+
+  def __fetchRowByNumberWithCode(self, row_number, code):
+    """Fetches a row by number, verifies it matches the code, and returns
+    it if it does."""
+    # Now that we have a row number, let's make sure that it actually
+    # matches. If it doesn't, we implicitly return None.
+    row = self.worksheet.row_values(row_number)
+    if self.__getValueFromRow(row, 'rsvpCode') == code:
+      return row
 
   def __writeValue(self, row_number, col_name, value):
     """Convenience method for writing a value to the spreadsheet."""
@@ -97,8 +102,8 @@ class SpreadsheetService(object):
 
   def guestLookup(self, code):
     """Returns information about a guest based on their invite code."""
-    row_number = self.__findRowForCode(code)
-    row = self.worksheet.row_values(row_number)
+    row_number = self.__findRowForcode(code)
+    row = self.__fetchRowByNumberWithCode(row_number, code)
 
     return {
       "primaryName": self.__getValueFromRow(row, "primaryName")
@@ -106,8 +111,9 @@ class SpreadsheetService(object):
 
   def RSVP(self, code, attending, headcount, meal_preference):
     row_number = self.__findRowForCode(code)
+    row = self.__fetchRowByNumberWithCode(row_number, code)
 
-    if not row_number:
+    if not row:
       return {
         'status': 'invalid',
         'fields': ['rsvpCode']

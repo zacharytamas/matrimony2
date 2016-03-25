@@ -4,3 +4,4 @@ _site
 bower_components
 credentials.json
 libs
+*.pyc

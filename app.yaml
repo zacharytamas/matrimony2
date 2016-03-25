@@ -37,6 +37,9 @@ handlers:
   static_files: _site/\1
   upload: _site/(.*\.(bmp|gif|ico|jpeg|jpg|png))
 
+- url: /api/.*
+  script: main.app
+
 - url: /(.+)/
   static_files: _site/\1/index.html
   upload: _site/(.+)/index.html
@@ -47,8 +50,6 @@ handlers:
   upload: _site/(.+)/index.html
   expiration: "15m"
 
-- url: .*
-  script: main.app
 
 libraries:
 - name: pycrypto
