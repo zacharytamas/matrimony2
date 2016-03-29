@@ -33,6 +33,7 @@
     "paper-radio-group": "PolymerElements/paper-radio-group#^1.0.9",
     "paper-radio-button": "PolymerElements/paper-radio-button#^1.1.1",
     "iron-form": "PolymerElements/iron-form#^1.0.16",
-    "paper-slider": "PolymerElements/paper-slider#^1.0.10"
+    "paper-slider": "PolymerElements/paper-slider#^1.0.10",
+    "iron-pages": "PolymerElements/iron-pages#^1.0.7"
   }
 }

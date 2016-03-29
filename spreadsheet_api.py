@@ -104,12 +104,21 @@ class SpreadsheetService(object):
 
   def guestLookup(self, code):
     """Returns information about a guest based on their invite code."""
-    row_number = self.__findRowForcode(code)
+    row_number = self.__findRowForCode(code)
     row = self.__fetchRowByNumberWithCode(row_number, code)
 
+    if not row:
+      return {
+        "status": "failed",
+        "message": "A guest with that invite code was not found."
+      }
+
     return {
-      "primaryName": self.__getValueFromRow(row, "primaryName"),
-      "expectedGuests": self.__getValueFromRow(row, "expectedGuests")
+      "status": "success",
+      "guest": {
+        "primaryName": self.__getValueFromRow(row, "primaryName"),
+        "expectedGuests": self.__getValueFromRow(row, "expectedGuests")
+      }
     }
 
   def RSVP(self, code, attending, headcount, guests, meal_preference=""):

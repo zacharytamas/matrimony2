@@ -11,6 +11,8 @@
 <link rel="import" href="../../bower_components/paper-radio-group/paper-radio-group.html">
 <link rel="import" href="../../bower_components/paper-radio-button/paper-radio-button.html">
 
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+
 <dom-module id="rsvp-form">
   <template>
     <style>
@@ -31,27 +33,46 @@
 
     <paper-card>
 
-      <form is="iron-form" id="form"
+      <!-- <form is="iron-form" id="form"
         method="post" action="/api/rsvp/respond/"
-        on-iron-form-response="_responseReceived">
+        on-iron-form-response="_responseReceived"> -->
 
-        <paper-input name="code" required
-          label="Enter your invite code here"></paper-input>
+        <iron-pages selected="{{currentPage}}" attr-for-selected="name">
+          <div name="enter-code">
+            <form id="guestLookupForm" is="iron-form"
+              action="/api/rsvp/guest-lookup/" method="get"
+              on-iron-form-response="_guestLookupResponse">
+              <h2>Enter code</h2>
 
-        <label>Are you able to join us?</label>
+              <paper-input name="code" required
+                label="Enter your invite code here"></paper-input>
 
-        <paper-radio-group attr-for-selected="value" selected="yes">
-          <paper-radio-button value="yes" name="attending">Yes</paper-radio-button>
-          <paper-radio-button value="no" name="attending">No</paper-radio-button>
-        </paper-radio-group>
-
-        <paper-slider name="headcount" min="1" max="5" value="1" editable snaps></paper-slider>
+              <paper-button raised on-tap="_guestLookupInitiate">Next</paper-button>
+            </form>
+          </div>
+          <div name="attending-or-nah">
+            <h2>Are you able to come?</h2>
+            <paper-radio-group attr-for-selected="value" selected="yes">
+              <paper-radio-button value="yes" name="attending">Yes</paper-radio-button>
+              <paper-radio-button value="no" name="attending">No</paper-radio-button>
+            </paper-radio-group>
+          </div>
+          <div name="guest-list">
+            <h2>Who all is coming?</h2>
+          </div>
+          <div name="conclusion">
+            <h2>That's all!</h2>
+          </div>
+          <div name="rsvp-complete">
+            <h2>You're all done!</h2>
+          </div>
+        </iron-pages>
 
         <div>
           <paper-button raised on-tap="_submit">Submit</paper-button>
         </div>
 
-      </form>
+      <!-- </form> -->
 
     </paper-card>
 
@@ -60,8 +81,30 @@
     Polymer({
       is: 'rsvp-form',
 
+      properties: {
+        guestInformation: {
+          type: Object
+        },
+        currentPage: {
+          value: 'enter-code'
+        }
+      },
+
       _submit: function() {
         this.$.form.submit();
+      },
+
+      _guestLookupInitiate: function() {
+        this.$.guestLookupForm.submit();
+      },
+
+      _guestLookupResponse: function(event, request) {
+        var response = request.response;
+        if (response.status == 'success') {
+          this.guestInformation = response.guest;
+        } else {
+          console.error(response);
+        }
       },
 
       _responseReceived: function(event) {
