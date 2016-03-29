@@ -22,10 +22,11 @@ class RSVPHandler(webapp2.RequestHandler):
     service = SpreadsheetService()
     code = self.request.get('code')
     attending = self.request.get('attending')
-    headcount = self.request.get('headcount')
     meal_preference = self.request.get("mealPreference")
+    guests = self.request.get('guests')
+    headcount = len(guests.split(','))
 
-    if not all([code, attending, headcount, meal_preference or True]):
+    if not all([code, attending, guests, headcount]):
       # logging.error("Invalid request to the respond endpoint...")
       # TODO Return an InvalidRequest
       self.response.write(json.dumps({
@@ -36,6 +37,7 @@ class RSVPHandler(webapp2.RequestHandler):
     response = service.RSVP(code,
                             attending == "yes",
                             headcount,
+                            guests,
                             meal_preference)
 
     self.response.write(json.dumps(response, indent=4))

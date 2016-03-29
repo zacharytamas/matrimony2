@@ -9,7 +9,8 @@ from oauth2client.client import SignedJwtAssertionCredentials
 CONFIG = json.load(open('credentials.json'))
 scope = ['https://spreadsheets.google.com/feeds']
 
-credentials = SignedJwtAssertionCredentials(CONFIG['client_email'], CONFIG['private_key'].encode(), scope)
+credentials = SignedJwtAssertionCredentials(CONFIG['client_email'],
+  CONFIG['private_key'].encode(), scope)
 
 DATA_WORKSHEET_NAME = "Data"
 COL_INFO_NAME_PRIMARY = 1
@@ -17,7 +18,7 @@ COL_INFO_NAME_PRIMARY = 1
 COL_NAMES = [
   "primaryName",
   "mailingName",
-  "secondaryNames",
+  "expectedGuests",
   "expectedHeadCount",
   "brideOrGroom",
   "category",
@@ -32,6 +33,7 @@ COL_NAMES = [
   "rsvpAttending",
   "rsvpHeadcount",
   "rsvpMealPreference",
+  "rsvpGuestNames",
 ]
 
 COL_INDEXES = {}
@@ -106,10 +108,11 @@ class SpreadsheetService(object):
     row = self.__fetchRowByNumberWithCode(row_number, code)
 
     return {
-      "primaryName": self.__getValueFromRow(row, "primaryName")
+      "primaryName": self.__getValueFromRow(row, "primaryName"),
+      "expectedGuests": self.__getValueFromRow(row, "expectedGuests")
     }
 
-  def RSVP(self, code, attending, headcount, meal_preference):
+  def RSVP(self, code, attending, headcount, guests, meal_preference=""):
     row_number = self.__findRowForCode(code)
     row = self.__fetchRowByNumberWithCode(row_number, code)
 
@@ -120,7 +123,7 @@ class SpreadsheetService(object):
       }
 
     rsvp_range = "%s%d:%s%d" % (COL_LETTERS["rsvpResponseMethod"], row_number,
-                                COL_LETTERS["rsvpMealPreference"], row_number)
+                                COL_LETTERS["rsvpGuestNames"], row_number)
 
     # This quirky method allows us to update them in a batch.
     selection = self.worksheet.range(rsvp_range)
@@ -128,7 +131,8 @@ class SpreadsheetService(object):
       "Online",
       "YES" if attending else "NO",
       headcount,
-      meal_preference
+      meal_preference,
+      guests
     ]
 
     for cell, value in zip(selection, values):
