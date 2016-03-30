@@ -126,6 +126,7 @@ class SpreadsheetService(object):
     return {
       "status": "success",
       "guest": {
+        "code": code,
         "primaryName": self.__getValueFromRow(row, "primaryName"),
         "expectedGuests": self.__getValueFromRow(row, "expectedGuests")
       }
