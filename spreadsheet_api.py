@@ -2,6 +2,7 @@ import gspread
 import json
 import logging
 import re
+from google.appengine.api import memcache
 from oauth2client.client import SignedJwtAssertionCredentials
 
 # credentials.json file from Google Cloud Console.
@@ -53,7 +54,16 @@ def magicIndexes():
     count += 1
 magicIndexes()
 
-SHARED_SERVICE = gspread.authorize(credentials)
+SHARED_SERVICE = None
+SERVICE_CACHE_KEY = 'gspread'
+
+
+def get_service():
+  service = memcache.get(SERVICE_CACHE_KEY)
+  if service is None:
+    service = gspread.authorize(credentials)
+    memcache.add(key=SERVICE_CACHE_KEY, value=service, time=3600)
+  return service
 
 
 class SpreadsheetService(object):
@@ -65,7 +75,7 @@ class SpreadsheetService(object):
   worksheet = None
 
   def __init__(self):
-    self.service = SHARED_SERVICE
+    self.service = get_service()
     self.__getSpreadsheet()
 
   def __getSpreadsheet(self):
@@ -90,7 +100,7 @@ class SpreadsheetService(object):
     # Now that we have a row number, let's make sure that it actually
     # matches. If it doesn't, we implicitly return None.
     row = self.worksheet.row_values(row_number)
-    if self.__getValueFromRow(row, 'rsvpCode') == code:
+    if self.__getValueFromRow(row, 'rsvpCode').lower() == code.lower():
       return row
 
   def __writeValue(self, row_number, col_name, value):
