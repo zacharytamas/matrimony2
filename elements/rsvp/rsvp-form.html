@@ -66,14 +66,17 @@
         <div name="guest-list">
           <h2>Who all is coming?</h2>
 
-          <p>To help you out, we took a stab at who we figured you might bring with you. If we're wrong, you can click the X to remove them. We won't tell anybody.</p>
+          <p>To help you out we took a stab at who we figured you might bring with you. If we misspelled anybody's name, we're sorry and you can correct us below. :)</p>
+          <p>If we included anybody not able to come you can click the X to remove them. Don't worry: we won't tell anybody.</p>
 
           <template is="dom-repeat" items="[[rsvpDetails.guests]]">
-            <div>
-              <paper-input no-float value="{{item}}" placeholder="Guest's name"></paper-input>
+            <div class="horizontal layout">
+              <paper-input class="flex" no-float value="{{item}}" placeholder="Guest's name"></paper-input>
               <paper-icon-button icon="cancel" on-tap="_removeGuest"></paper-icon-button>
             </div>
           </template>
+
+          <p>Additionally you may bring a few extra guests by adding their names below.</p>
 
           <paper-input id="guest1Input" placeholder="Guest #1 (optional)"></paper-input>
           <paper-input id="guest2Input" placeholder="Guest #2 (optional)"></paper-input>
@@ -84,6 +87,13 @@
 
         <div name="final-details">
           <h2>Just a few last things...</h2>
+
+          <p>Do you have any questions or comments? Meal preferences? Perhaps you're vegeterian, for example. If so, you can mention them below.</p>
+
+          <paper-input label="Questions/comments" value="{{rsvpDetails.comments}}"></paper-input>
+
+          <paper-button raised on-tap="_sendRSVP">Send RSVP</paper-button>
+
         </div>
 
         <div name="rsvp-complete">
@@ -130,6 +140,7 @@
       _prefillRSVPFromLookup: function(guest) {
         this.set('rsvpDetails.code', guest.code);
         this.set('rsvpDetails.guests', guest.expectedGuests.split(','));
+        this.set('rsvpDetails.comments', '');
       },
 
       _guestListComplete: function() {
@@ -142,12 +153,18 @@
         this._advanceToPage('final-details');
       },
 
+      _removeGuest: function(event) {
+        var index = this.rsvpDetails.guests.indexOf(event.model);
+        this.splice('rsvpDetails.guests', index, 1);
+      },
+
       _sendRSVP: function() {
 
         var rsvp = {
           guests: this.rsvpDetails.guests.join(','),
           attending: this.rsvpDetails.attending,
-          code: this.rsvpDetails.code
+          code: this.rsvpDetails.code,
+          comments: this.rsvpDetails.comments
         };
 
         // If they are not attending, then there are no guests.
@@ -182,22 +199,18 @@
         if (attending) {
           return 'If you\'d like to bring along a gift';
         } else {
-          return "If you'd like to send a gift in your absence";
+          return 'If you\'d like to send a gift in your absence';
         }
       },
 
       _attendingYes: function() {
-        this.rsvpDetails.attending = true;
+        this.set('rsvpDetails.attending', true);
         this._advanceToPage('guest-list');
       },
 
       _attendingNo: function() {
-        this.rsvpDetails.attending = false;
+        this.set('rsvpDetails.attending', false);
         this._sendRSVP();
-      },
-
-      _responseReceived: function(event) {
-        console.log('response', event.detail);
       }
     });
   </script>

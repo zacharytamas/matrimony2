@@ -28,12 +28,12 @@ COL_NAMES = [
   "addressState",
   "addressZipCode",
   "sdEnvelopePrinted",
-  "-",
+  "invEnvelopePrinted",
   "rsvpCode",
   "rsvpResponseMethod",
   "rsvpAttending",
   "rsvpHeadcount",
-  "rsvpMealPreference",
+  "rsvpComments",
   "rsvpGuestNames",
 ]
 
@@ -135,7 +135,7 @@ class SpreadsheetService(object):
       }
     }
 
-  def RSVP(self, code, attending, headcount, guests, meal_preference=""):
+  def RSVP(self, code, attending, headcount, guests, comments=""):
     row_number = self.__findRowForCode(code)
     row = self.__fetchRowByNumberWithCode(row_number, code)
 
@@ -154,7 +154,7 @@ class SpreadsheetService(object):
       "Online",
       "YES" if attending else "NO",
       headcount if attending else 0,
-      meal_preference,
+      comments,
       guests
     ]
 

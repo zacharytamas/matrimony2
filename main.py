@@ -22,7 +22,7 @@ class RSVPHandler(webapp2.RequestHandler):
     service = SpreadsheetService()
     code = self.request.get('code')
     attending = self.request.get('attending')
-    meal_preference = self.request.get("mealPreference")
+    comments = self.request.get('comments')
     guests = self.request.get('guests', '')
     headcount = len(guests.split(','))
 
@@ -35,10 +35,10 @@ class RSVPHandler(webapp2.RequestHandler):
       return
 
     response = service.RSVP(code,
-                            attending == "yes",
+                            attending == "true",
                             headcount,
                             guests,
-                            meal_preference)
+                            comments)
 
     self.response.write(json.dumps(response, indent=4))
 
