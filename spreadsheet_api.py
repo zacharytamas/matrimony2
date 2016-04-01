@@ -153,7 +153,7 @@ class SpreadsheetService(object):
     values = [
       "Online",
       "YES" if attending else "NO",
-      headcount,
+      headcount if attending else 0,
       meal_preference,
       guests
     ]

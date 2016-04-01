@@ -23,10 +23,10 @@ class RSVPHandler(webapp2.RequestHandler):
     code = self.request.get('code')
     attending = self.request.get('attending')
     meal_preference = self.request.get("mealPreference")
-    guests = self.request.get('guests')
+    guests = self.request.get('guests', '')
     headcount = len(guests.split(','))
 
-    if not all([code, attending, guests, headcount]):
+    if not all([code, attending]):
       # logging.error("Invalid request to the respond endpoint...")
       # TODO Return an InvalidRequest
       self.response.write(json.dumps({
