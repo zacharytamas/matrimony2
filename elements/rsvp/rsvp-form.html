@@ -10,6 +10,8 @@
 <link rel="import" href="../../bower_components/paper-slider/paper-slider.html">
 <link rel="import" href="../../bower_components/paper-radio-group/paper-radio-group.html">
 <link rel="import" href="../../bower_components/paper-radio-button/paper-radio-button.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+
 
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 
@@ -71,8 +73,13 @@
           <div name="guest-list">
             <h2>Who all is coming?</h2>
 
+            <p>To help you out, we took a stab at who we figured you might bring with you. If we're wrong, you can click the X to remove them. We won't tell anybody.</p>
+
             <template is="dom-repeat" items="[[rsvpDetails.guests]]">
-              <div><paper-input no-float value="{{item}}"></paper-input></div>
+              <div>
+                <paper-input no-float value="{{item}}" placeholder="Guest's name"></paper-input>
+                <paper-icon-button icon="cancel" on-tap="_removeGuest"></paper-icon-button>
+              </div>
             </template>
 
             <paper-input id="guest1Input" placeholder="Guest #1 (optional)"></paper-input>
@@ -152,7 +159,7 @@
           code: this.rsvpDetails.code
         };
 
-        // If they are not attending, then the guests are 0.
+        // If they are not attending, then there are no guests.
         if (!rsvp.attending) {
           rsvp.guests = '';
         }
