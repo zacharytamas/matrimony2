@@ -38,14 +38,21 @@
     <paper-card>
 
       <iron-pages selected="{{currentPage}}" attr-for-selected="name">
+
         <div name="enter-code">
           <form id="guestLookupForm" is="iron-form"
             action="/api/rsvp/guest-lookup/" method="get"
             on-iron-form-response="_guestLookupResponseReceived">
-            <h2>Enter code</h2>
 
-            <paper-input name="code" required id="codeInput"
+            <h2>Did you get an invite to our wedding?</h2>
+
+            <p>Your invitation included a special code you can use to easily RSVP to our wedding.</p>
+            <p>To get started, please enter your invite code below.</p>
+
+            <paper-input name="code" required id="codeInput" no-label-float
               label="Enter your invite code here"></paper-input>
+
+            <br>
 
             <paper-button raised on-tap="_guestLookupInitiate">Next</paper-button>
           </form>
@@ -71,16 +78,17 @@
 
           <template is="dom-repeat" items="[[rsvpDetails.guests]]">
             <div class="horizontal layout">
-              <paper-input class="flex" no-float value="{{item}}" placeholder="Guest's name"></paper-input>
+              <paper-input class="flex" no-label-float value="{{item}}" placeholder="Guest's name"></paper-input>
               <paper-icon-button icon="cancel" on-tap="_removeGuest"></paper-icon-button>
             </div>
           </template>
 
           <p>Additionally you may bring a few extra guests by adding their names below.</p>
 
-          <paper-input id="guest1Input" placeholder="Guest #1 (optional)"></paper-input>
-          <paper-input id="guest2Input" placeholder="Guest #2 (optional)"></paper-input>
+          <paper-input id="guest1Input" no-label-float placeholder="Guest #1 (optional)"></paper-input>
+          <paper-input id="guest2Input" no-label-float placeholder="Guest #2 (optional)"></paper-input>
 
+          <br>
           <paper-button raised on-tap="_guestListComplete">Next</paper-button>
 
         </div>
@@ -92,6 +100,7 @@
 
           <paper-input label="Questions/comments" value="{{rsvpDetails.comments}}"></paper-input>
 
+          <br>
           <paper-button raised on-tap="_sendRSVP">Send RSVP</paper-button>
 
         </div>
