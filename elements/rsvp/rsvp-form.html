@@ -33,7 +33,7 @@
 
     <iron-ajax id="rsvper"
       url="/api/rsvp/respond/"
-      handle-as="json"
+      handle-as="json" method="post"
       on-response="_rsvpResponseReceived"></iron-ajax>
 
     <paper-card>
@@ -145,11 +145,24 @@
       },
 
       _sendRSVP: function() {
-        console.log('would have sent RSVP', this.rsvpDetails);
+
+        var rsvp = {
+          guests: this.rsvpDetails.guests.join(','),
+          attending: this.rsvpDetails.attending,
+          code: this.rsvpDetails.code
+        };
+
+        // If they are not attending, then the guests are 0.
+        if (!rsvp.attending) {
+          rsvp.guests = '';
+        }
+
+        this.$.rsvper.params = rsvp;
+        this.$.rsvper.generateRequest();
       },
 
       _rsvpResponseReceived: function(event, response) {
-
+        this.currentPage = 'rsvp-complete';
       },
 
       _guestLookupResponseReceived: function(event, request) {
