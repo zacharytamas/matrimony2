@@ -100,7 +100,7 @@ class SpreadsheetService(object):
     # Now that we have a row number, let's make sure that it actually
     # matches. If it doesn't, we implicitly return None.
     row = self.worksheet.row_values(row_number)
-    if self.__getValueFromRow(row, 'rsvpCode').lower() == code.lower():
+    if row and self.__getValueFromRow(row, 'rsvpCode').lower() == code.lower():
       return row
 
   def __writeValue(self, row_number, col_name, value):
@@ -110,7 +110,10 @@ class SpreadsheetService(object):
   def __getValueFromRow(self, row, col_name):
     """Just a convenience accessor to get values from
     certain columns of a row."""
-    return row[COL_INDEXES[col_name] - 1]
+    try:
+      return row[COL_INDEXES[col_name] - 1]
+    except IndexError:
+      return None
 
   def guestLookup(self, code):
     """Returns information about a guest based on their invite code."""
